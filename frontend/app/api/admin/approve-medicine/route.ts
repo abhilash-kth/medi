@@ -1,0 +1,31 @@
+import { prisma } from '@/lib/prisma'
+import { NextResponse } from 'next/server'
+import { verifyToken } from '@/lib/auth'
+
+export async function POST(req: Request) {
+  const token = req.headers.get("authorization")?.split(" ")[1]
+
+  if (!verifyToken(token || "")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  const body = await req.json()
+
+  const med = await prisma.medicine.upsert({
+    where: { canonicalName: body.canonicalName },
+    create: {
+      ...body,
+      approved: true
+    },
+    update: {
+      approved: true
+    }
+  })
+
+  await prisma.searchRequest.updateMany({
+    where: { canonicalName: body.canonicalName },
+    data: { status: "APPROVED" }
+  })
+
+  return NextResponse.json(med)
+}

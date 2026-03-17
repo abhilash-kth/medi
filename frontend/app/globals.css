@@ -1,0 +1,205 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ────────────────────────────────────────────────
+   Custom Properties – Colors, Fonts, Radii, etc.
+──────────────────────────────────────────────── */
+:root {
+  --background: 0 0% 98%;
+  --foreground: 240 10% 8%;
+
+  --card: 0 0% 99%;
+  --card-foreground: 240 10% 8%;
+
+  --popover: 0 0% 99%;
+  --popover-foreground: 240 10% 8%;
+
+  --primary: 200 75% 52%;           /* trustworthy deep teal */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 220 30% 94%;         /* very soft blue-gray */
+  --secondary-foreground: 240 10% 20%;
+
+  --muted: 240 5% 90%;
+  --muted-foreground: 240 6% 45%;
+
+  --accent: 162 65% 40%;            /* elegant emerald – success / better option */
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 240 5.5% 88%;
+  --input: 240 5.5% 88%;
+  --ring: 200 75% 52%;
+
+  /* Healthcare-specific semantic colors */
+  --success: 162 65% 40%;
+  --warning: 38 92% 50%;            /* amber – moderate interactions, mid-price */
+  --info: 200 75% 52%;              /* teal – informational */
+  --alert: 0 84% 60%;               /* serious alerts */
+
+  /* Price tiering – very useful for medicine comparison */
+  --price-low: 162 65% 40%;         /* great deal / generic */
+  --price-mid: 38 92% 50%;          /* average */
+  --price-high: 346 77% 50%;        /* expensive branded */
+
+  /* Chart colors for side-by-side comparisons */
+  --chart-1: 200 75% 52%;           /* Medicine A */
+  --chart-2: 162 65% 40%;           /* Medicine B */
+  --chart-3: 262 83% 58%;           /* highlight / third option */
+  --chart-4: 43 96% 56%;            /* price trend line */
+  --chart-5: 0 84% 60%;             /* warning / interaction */
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* Dark mode */
+.dark {
+  --background: 240 10% 4%;
+  --foreground: 0 0% 98%;
+
+  --card: 240 10% 6.5%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 240 10% 6.5%;
+  --popover-foreground: 0 0% 98%;
+
+  --primary: 200 80% 62%;
+  --primary-foreground: 240 10% 4%;
+
+  --secondary: 240 5% 12%;
+  --secondary-foreground: 0 0% 80%;
+
+  --muted: 240 5% 15%;
+  --muted-foreground: 240 5% 65%;
+
+  --accent: 162 70% 50%;
+  --accent-foreground: 240 10% 4%;
+
+  --destructive: 0 84% 70%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 240 5% 18%;
+  --input: 240 5% 18%;
+  --ring: 200 80% 62%;
+
+  --success: 162 70% 50%;
+  --warning: 38 92% 60%;
+  --info: 200 80% 62%;
+  --price-low: 162 70% 50%;
+  --price-mid: 38 92% 60%;
+  --price-high: 346 77% 60%;
+}
+
+/* ────────────────────────────────────────────────
+   Global Base Styles
+──────────────────────────────────────────────── */
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    font-feature-settings: "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply tracking-tight;
+  }
+
+  h1 { @apply text-3xl font-bold md:text-4xl; }
+  h2 { @apply text-2xl font-bold md:text-3xl; }
+  h3 { @apply text-xl font-semibold; }
+  h4 { @apply text-lg font-semibold; }
+
+  p, li, td, th {
+    @apply text-[15px] leading-relaxed md:text-base;
+  }
+}
+
+/* ────────────────────────────────────────────────
+   Reusable Components
+──────────────────────────────────────────────── */
+@layer components {
+  .card {
+    @apply border bg-card text-card-foreground rounded-xl border-border/70 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] transition-all duration-200 hover:shadow-[0_10px_30px_-6px_rgba(0,0,0,0.09)] hover:border-primary/25 overflow-hidden;
+  }
+
+  .dark .card {
+    @apply shadow-[0_4px_20px_-2px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_40px_-8px_rgba(0,0,0,0.55)];
+  }
+
+  .kpi-card {
+    @apply card bg-gradient-to-br from-card to-secondary/30 p-6 hover:shadow-md;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-lg border border-input bg-background px-5 py-2.5 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  /* Comparison table enhancements */
+  table.comparison-table {
+    @apply w-full border-collapse;
+  }
+
+  table.comparison-table th {
+    @apply bg-muted/60 text-muted-foreground font-medium text-xs uppercase tracking-wider px-5 py-3.5 text-left sticky top-0 z-10 backdrop-blur-sm;
+  }
+
+  table.comparison-table td {
+    @apply border-t border-border px-5 py-4 align-middle;
+  }
+
+  tr.comparison-row:hover {
+    @apply bg-muted/50 transition-colors duration-150;
+  }
+
+  tr.comparison-highlight {
+    @apply bg-primary/5 border-l-4 border-l-primary;
+  }
+
+  td.price {
+    @apply font-semibold;
+  }
+
+  .price-low { @apply text-[var(--price-low)]; }
+  .price-mid  { @apply text-[var(--price-mid)]; }
+  .price-high { @apply text-[var(--price-high)]; }
+
+  .status-good {
+  @apply font-medium;
+  color: hsl(var(--success));
+}
+
+.status-warn {
+  @apply font-medium;
+  color: hsl(var(--warning));
+}
+
+.status-bad {
+  @apply font-medium;
+  color: hsl(var(--destructive));
+}
+
+}
+
+/* Optional: glass effect for sidebar / header */
+@layer utilities {
+  .glass {
+    @apply bg-background/70 backdrop-blur-xl border-border/40 border;
+  }
+
+  .dark .glass {
+    @apply bg-background/80 backdrop-blur-xl border-border/30;
+  }
+}

@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Medicine {
+  id            Int       @id @default(autoincrement())
+  brand         String
+  strength      String
+  form          String
+  variant       String
+  canonicalName String    @unique
+  approved      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  products      Product[]
+}
+
+model Product {
+  id            Int      @id @default(autoincrement())
+  medicineId    Int
+  source        Source
+  name          String
+  pack          String?
+  price         String?
+  originalPrice String?
+  discount      String?
+  productUrl    String?
+  endpoint      String?
+  scrapedAt     DateTime @default(now())
+  medicine      Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
+
+  @@unique([medicineId, source])
+}
+
+model SearchRequest {
+  id            Int          @id @default(autoincrement())
+  brand         String
+  strength      String
+  form          String
+  variant       String
+  canonicalName String
+  operatorName  String
+  status        SearchStatus @default(PENDING)
+  createdAt     DateTime     @default(now())
+
+  @@unique([brand, strength, form, variant])
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+
+  email     String   @unique
+  password  String
+
+  role      Role     @default(ADMIN)
+
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+}
+
+enum Source {
+  NETMEDS
+  PHARMEASY
+  ONEMG
+  TRUEMEDS
+}
+
+enum SearchStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
