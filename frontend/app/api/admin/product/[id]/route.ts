@@ -36,73 +36,80 @@
 
 // app/api/admin/product/[id]/route.ts
 
-import { prisma } from '@/lib/prisma'
-import { NextResponse } from 'next/server'
-import { verifyToken } from '@/lib/auth'
-
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { verifyToken } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { Prisma } from "@prisma/client";
 export async function PUT(
   req: Request,
-  context: { params: Promise<{ id: string }> }  // ← note: Promise<{ id: string }>
+  context: { params: Promise<{ id: string }> },
 ) {
-  const token = req.headers.get("authorization")?.split(" ")?.[1] ?? null
+  // ✅ FIX: use cookies instead of headers
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
 
-  if (!token || !verifyToken(token)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const decoded = token ? verifyToken(token) : null;
+
+  if (!token || !decoded) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Await the params Promise – this is the required fix
-  const params = await context.params
-  const productId = Number(params.id)
+  // ✅ params fix (already correct)
+  const params = await context.params;
+  const productId = Number(params.id);
 
   if (isNaN(productId) || productId <= 0) {
     return NextResponse.json(
       { error: "Invalid product ID (must be a positive integer)" },
-      { status: 400 }
-    )
+      { status: 400 },
+    );
   }
 
-  let body
+  let body;
   try {
-    body = await req.json()
+    body = await req.json();
   } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON body" },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
   try {
-    // Optional: check if exists first (good practice)
     const existing = await prisma.product.findUnique({
       where: { id: productId },
-      select: { id: true } // minimal
-    })
+      select: { id: true },
+    });
 
     if (!existing) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 })
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    // Update – be careful with what you allow in body!
-    // In production, validate/sanitize body or use zod/prisma validator
     const updated = await prisma.product.update({
       where: { id: productId },
-      data: body
-    })
+      data: body,
+    });
 
     return NextResponse.json({
       status: "UPDATED",
-      product: updated
-    })
-  } catch (err: any) {
-    console.error("Product update error:", err)
+      product: updated,
+    });
+  } catch (err: unknown) {
+    console.error("Product update error:", err);
 
-    if (err.code === 'P2025') { // Prisma "not found"
-      return NextResponse.json({ error: "Product not found" }, { status: 404 })
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      if (err.code === "P2025") {
+        return NextResponse.json(
+          { error: "Product not found" },
+          { status: 404 },
+        );
+      }
     }
 
     return NextResponse.json(
-      { error: "Failed to update product", detail: err.message },
-      { status: 500 }
-    )
+      {
+        error: "Failed to update product",
+        detail: err instanceof Error ? err.message : "Unknown error",
+      },
+      { status: 500 },
+    );
   }
 }

@@ -1,6 +1,5 @@
-import { AdminLayout } from "@/components/layout/admin-layout"
-import Medicine from "@/components/medicineTable/medicine"
-
+import { AdminLayout } from "@/components/layout/admin-layout";
+import Medicine from "@/components/medicineTable/medicine";
 
 export default function AdminPage() {
   return (
@@ -9,6 +8,6 @@ export default function AdminPage() {
         {/* <h2 className="text-2xl font-bold">All Medicine</h2> */}
         <Medicine />
       </div>
-    </AdminLayout> 
-  )
+    </AdminLayout>
+  );
 }

@@ -9,7 +9,7 @@
 
 // export default api
 
-import axios from "axios"
+import axios from "axios";
 
 const api = axios.create({
   baseURL: "/api",
@@ -17,19 +17,20 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-})
+  withCredentials: true, // ⭐ THIS IS THE KEY FIX
+});
 
 // ✅ ADD THIS
-api.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token")
+// api.interceptors.request.use((config) => {
+//   if (typeof window !== "undefined") {
+//     const token = localStorage.getItem("token")
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-  }
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`
+//     }
+//   }
 
-  return config
-})
+//   return config
+// })
 
-export default api
+export default api;

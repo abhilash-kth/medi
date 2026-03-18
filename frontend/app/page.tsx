@@ -1,8 +1,4 @@
-import { redirect } from "next/navigation"
-import { verifyToken } from "@/lib/auth"
+import { redirect } from "next/navigation";
 export default function HomePage() {
-
-   redirect("/admin")
-  
-  
+  redirect("/admin");
 }

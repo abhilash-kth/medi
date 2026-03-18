@@ -1,5 +1,5 @@
-import { AdminLayout } from "@/components/layout/admin-layout"
-import { SearchRequestTable } from "@/components/search/search-request-table"
+import { AdminLayout } from "@/components/layout/admin-layout";
+import { SearchRequestTable } from "@/components/search/search-request-table";
 
 export default function AdminPage() {
   return (
@@ -8,6 +8,6 @@ export default function AdminPage() {
         <h2 className="text-2xl font-bold">Search Requests</h2>
         <SearchRequestTable />
       </div>
-    </AdminLayout> 
-  )
+    </AdminLayout>
+  );
 }
