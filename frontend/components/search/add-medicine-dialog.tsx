@@ -109,62 +109,64 @@
 //     </Dialog>
 //   )
 // }
+"use client";
 
-"use client"
+import { useState } from "react";
+import api from "@/lib/axios";
+import { toast } from "sonner";
 
-import { useState } from "react"
-import api from "@/lib/axios"
-
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 export function AddMedicineDialog({ request }: any) {
-  const [variant, setVariant] = useState(request.variant || "")
-  const [loading, setLoading] = useState(false)
+  const [variant, setVariant] = useState(request.variant || "");
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false); // ✅ control dialog
 
   const handleCreate = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
 
       const res = await api.post(
         `/admin/create-medicine-from-request/${request.id}`,
-        {
-          variant, // ✅ send updated variant if needed
-        }
-      )
+        { variant }
+      );
 
+      // ✅ Success cases
       if (res.data.status === "MEDICINE_CREATED") {
-        alert("Medicine created successfully")
+        toast.success("Medicine created successfully 💊");
+      } else if (res.data.status === "MEDICINE_ALREADY_EXISTS") {
+        toast.warning("Medicine already exists ⚠️");
       }
 
-      if (res.data.status === "MEDICINE_ALREADY_EXISTS") {
-        alert("Medicine already exists")
-      }
+      // ✅ Close dialog instead of reload
+      setOpen(false);
 
-      // refresh page
-      window.location.reload()
+      // ❗ OPTIONAL: if you still want reload
+      // window.location.reload();
+
     } catch (error: any) {
-      console.error(error)
+      console.error(error);
 
-      alert(
+      toast.error(
         error?.response?.data?.message ||
         error?.response?.data?.detail ||
-        "Failed to create medicine"
-      )
+        "Failed to create medicine ❌"
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm">Add</Button>
       </DialogTrigger>
@@ -175,23 +177,9 @@ export function AddMedicineDialog({ request }: any) {
         </DialogHeader>
 
         <div className="space-y-4">
-          <Input
-            defaultValue={request.brand}
-            placeholder="Brand"
-            disabled
-          />
-
-          <Input
-            defaultValue={request.strength}
-            placeholder="Strength"
-            disabled
-          />
-
-          <Input
-            defaultValue={request.form}
-            placeholder="Form"
-            disabled
-          />
+          <Input value={request.brand} disabled />
+          <Input value={request.strength} disabled />
+          <Input value={request.form} disabled />
 
           <Input
             value={variant}
@@ -200,7 +188,7 @@ export function AddMedicineDialog({ request }: any) {
           />
 
           <Button
-            className="w-full btn-primary"
+            className="w-full"
             onClick={handleCreate}
             disabled={loading}
           >
@@ -209,5 +197,5 @@ export function AddMedicineDialog({ request }: any) {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

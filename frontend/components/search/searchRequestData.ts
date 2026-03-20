@@ -27,6 +27,7 @@ export const fetchSearchRequests = async () => {
 }
 
 export const deleteSearchRequest = async (id: number) => {
-  const res = await api.delete(`/admin/search-request/${id}`)
+  const res = await api.delete(`/admin/search-requests/${id}`) // ✅ FIXED
   return res.data
 }
+

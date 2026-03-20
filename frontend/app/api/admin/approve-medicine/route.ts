@@ -1,9 +1,11 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/auth'
+import { cookies } from 'next/headers'
 
 export async function POST(req: Request) {
-  const token = req.headers.get("authorization")?.split(" ")[1]
+  const cookieStore = await cookies()
+  const token = cookieStore.get("auth_token")?.value
 
   if (!verifyToken(token || "")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
