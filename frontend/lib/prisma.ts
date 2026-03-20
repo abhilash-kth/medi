@@ -4,7 +4,38 @@ import { PrismaClient } from "@prisma/client";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const databaseUrl = process.env.DATABASE_URL;
+function getDatabaseUrl() {
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    return undefined;
+  }
+
+  try {
+    const url = new URL(connectionString);
+    const sslMode = url.searchParams.get("sslmode");
+
+    if (!sslMode) {
+      return connectionString;
+    }
+
+    if (process.env.DATABASE_CA_CERT) {
+      url.searchParams.set("sslmode", "verify-full");
+      return url.toString();
+    }
+
+    if (sslMode === "require") {
+      url.searchParams.set("sslmode", "no-verify");
+      return url.toString();
+    }
+
+    return url.toString();
+  } catch {
+    return connectionString;
+  }
+}
+
+const databaseUrl = getDatabaseUrl();
 
 function getPoolSslConfig(connectionString?: string) {
   if (!connectionString) {
@@ -31,8 +62,7 @@ function getPoolSslConfig(connectionString?: string) {
   }
 
   return {
-    // Some hosted Postgres providers require TLS but do not present a chain
-    // that Node can verify in serverless environments like Vercel.
+    // Keep this aligned with the normalized connection string.
     rejectUnauthorized: false,
   };
 }
