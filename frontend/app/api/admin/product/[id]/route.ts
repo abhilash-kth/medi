@@ -40,7 +40,18 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/auth";
 import { cookies } from "next/headers";
-import { Prisma } from "@prisma/client";
+
+function isPrismaKnownRequestError(
+  err: unknown,
+): err is { code: string; message: string } {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "code" in err &&
+    typeof (err as { code: unknown }).code === "string"
+  );
+}
+
 export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> },
@@ -95,13 +106,8 @@ export async function PUT(
   } catch (err: unknown) {
     console.error("Product update error:", err);
 
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
-      if (err.code === "P2025") {
-        return NextResponse.json(
-          { error: "Product not found" },
-          { status: 404 },
-        );
-      }
+    if (isPrismaKnownRequestError(err) && err.code === "P2025") {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
     return NextResponse.json(
