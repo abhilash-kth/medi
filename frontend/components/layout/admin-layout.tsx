@@ -9,7 +9,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
       <div className="flex flex-col flex-1">
         <Topbar />
-        <main className="p-3 bg-[#9fd6ce]">{children}</main>
+        <main className="p-3 bg-[#9fd6ce] flex-1 overflow-auto">{children}</main>
         <div className="absolute">
         <Footer/>
       </div>

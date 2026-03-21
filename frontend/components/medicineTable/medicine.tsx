@@ -107,7 +107,6 @@ export default function Medicine() {
   const [addOpen, setAddOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
   const [newProduct, setNewProduct] = useState({
     source: "",
     name: "",
@@ -154,20 +153,19 @@ export default function Medicine() {
   //   setTotalCount(res.total);
   // };
   const loadMedicines = async (pageNumber: number) => {
-  setLoading(true); // 🔄 start loading
+    setLoading(true); // 🔄 start loading
 
-  try {
-    const res = await fetchMedicines(pageNumber, 10, approvedFilter);
-    setData(res.data);
-    setTotalPages(res.totalPages);
-    setTotalCount(res.total);
-  } catch (err) {
-    console.error("Failed to load medicines", err);
-  } finally {
-    setLoading(false); // ✅ stop loading
-  }
-};
-
+    try {
+      const res = await fetchMedicines(pageNumber, 10, approvedFilter);
+      setData(res.data);
+      setTotalPages(res.totalPages);
+      setTotalCount(res.total);
+    } catch (err) {
+      console.error("Failed to load medicines", err);
+    } finally {
+      setLoading(false); // ✅ stop loading
+    }
+  };
 
   // Search handlers
   const handleSearch = async (value: string) => {
@@ -497,11 +495,11 @@ export default function Medicine() {
 
   // ================ Sorting Function by Toogle Handel =================
   const getIcon = () => {
-  if (loading) return "⏳";
-  if (approvedFilter === "APPROVED") return "✅";
-  if (approvedFilter === "NOT_APPROVED") return "❌";
-  return "🔄";
-};
+    if (loading) return "⏳";
+    if (approvedFilter === "APPROVED") return "✅";
+    if (approvedFilter === "NOT_APPROVED") return "❌";
+    return "🔄";
+  };
 
   const toggleApprovedFilter = () => {
     setPage(1); // reset pagination
@@ -514,15 +512,15 @@ export default function Medicine() {
   };
 
   return (
-    <div className="min-h-screen bg-[#9fd6ce]">
+    <div className="h-[100%] bg-[#9fd6ce]">
       <div className="mx-auto space-y-8">
         {/* Header & Controls */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-foreground text-[#294c99]">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter !text-[#224c98]">
               Medicine Catalog
             </h1>
-            <p className="mt-2 text-lg text-muted-foreground text-[#176e27]">
+            <p className="mt-2 text-lg font-semibold text-[#176e27]">
               Real-time price comparison • 4 pharmacies • Admin mode
             </p>
           </div>
@@ -657,29 +655,47 @@ export default function Medicine() {
                     onCheckedChange={toggleSelectAllMedicines}
                   />
                 </TableHead>
-                <TableHead className="w-14 font-bold text-[#1d498f]">ID</TableHead>
-                <TableHead className="font-bold text-[#1d498f]">Brand</TableHead>
-                <TableHead className="font-bold text-[#1d498f]">Strength</TableHead>
+                <TableHead className="w-14 font-bold text-[#1d498f]">
+                  ID
+                </TableHead>
+                <TableHead className="font-bold text-[#1d498f]">
+                  Brand
+                </TableHead>
+                <TableHead className="font-bold text-[#1d498f]">
+                  Strength
+                </TableHead>
                 <TableHead className="font-bold text-[#1d498f]">Form</TableHead>
-                <TableHead className="font-bold text-[#1d498f]">Variant</TableHead>
+                <TableHead className="font-bold text-[#1d498f]">
+                  Variant
+                </TableHead>
                 {/* <TableHead className="w-20 text-center">Approved</TableHead> */}
                 <TableHead className="w-20 text-center">
-                  <Button variant="ghost" onClick={toggleApprovedFilter} disabled={loading} className="font-bold text-[#1d498f]">
+                  <Button
+                    variant="ghost"
+                    onClick={toggleApprovedFilter}
+                    disabled={loading}
+                    className="font-bold text-[#1d498f]"
+                  >
                     Approved {getIcon()}
                   </Button>
                 </TableHead>
 
-                <TableHead className="text-right w-40 font-bold text-[#1d498f]">Products</TableHead>
+                <TableHead className="text-right w-40 font-bold text-[#1d498f]">
+                  Products
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data.length === 0 ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={8}
-                    className="h-40 text-center text-muted-foreground"
-                  >
-                    No medicines found
+                  <TableCell colSpan={8} className="h-40 text-center">
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <Loader2 className="h-10 w-10 animate-spin text-primary" />
+
+                      <p className="text-lg font-semibold text-muted-foreground">
+                        Loading data...
+                      </p>
+                    </div>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -702,8 +718,10 @@ export default function Medicine() {
                     <TableCell className="font-semibold">{med.brand}</TableCell>
                     <TableCell>{med.strength}</TableCell>
                     <TableCell>{med.form}</TableCell>
-                    <TableCell className="uppercase text-xs tracking-widest text-muted-foreground">
-                      {med.variant}
+                    <TableCell className="uppercase">
+                      <span className="flex justify-center flex-wrap content-center w-[80px] h-[28px] rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400">
+                        {med.variant}
+                      </span>
                     </TableCell>
                     <TableCell className="text-center">
                       <span

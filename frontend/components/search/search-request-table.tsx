@@ -236,6 +236,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Loader2 } from "lucide-react";
 
 import { AddMedicineDialog } from "./add-medicine-dialog";
 import {
@@ -274,7 +275,7 @@ export function SearchRequestTable() {
 
   useEffect(() => {
     loadRequests();
-  }, [data]);
+  }, []);
 
   // ✅ Toggle checkbox
   const toggleSelect = (id: number) => {
@@ -308,13 +309,26 @@ export function SearchRequestTable() {
   };
 
   if (loading) {
-    return <div className="p-6 text-muted-foreground">Loading requests...</div>;
-  }
+  return (
+    <div className="h-full flex items-center justify-center">
+      <div className="flex flex-col items-center gap-3">
+        
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+
+        <p className="text-lg font-semibold text-muted-foreground">
+          Loading requests...
+        </p>
+
+      </div>
+    </div>
+  );
+}
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Search Requests</CardTitle>
+    // <div className="bg-[#9fd6ce] h-screen">
+    <Card className="bg-[#bbc8dd]">
+      <CardHeader className="flex flex-row items-center justify-between ">
+        <CardTitle >Search Requests</CardTitle>
 
         {selectedIds.length > 0 && (
           <Button
@@ -326,18 +340,18 @@ export function SearchRequestTable() {
         )}
       </CardHeader>
 
-      <CardContent>
+      <CardContent >
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead></TableHead>
-              <TableHead>Query</TableHead>
-              <TableHead>Brand</TableHead>
-              <TableHead>Strength</TableHead>
-              <TableHead>Form</TableHead>
-              <TableHead>Variant</TableHead>
-              <TableHead>Operator</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead className="text-[#1f4f9a] font-bold">Query</TableHead>
+              <TableHead className="text-[#1f4f9a] font-bold">Brand</TableHead>
+              <TableHead className="text-[#1f4f9a] font-bold">Strength</TableHead>
+              <TableHead className="text-[#1f4f9a] font-bold">Form</TableHead>
+              <TableHead className="text-[#1f4f9a] font-bold">Variant</TableHead>
+              <TableHead className="text-[#1f4f9a] font-bold">Operator</TableHead>
+              <TableHead className="text-right text-[#1f4f9a] font-bold">Action</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -416,6 +430,7 @@ export function SearchRequestTable() {
       )}
 
     </Card>
+    // </div>
   );
 }
 
