@@ -15,6 +15,7 @@ model Medicine {
   canonicalName String    @unique
   approved      Boolean   @default(false)
   createdAt     DateTime  @default(now())
+  approvedAt    DateTime?
   products      Product[]
 }
 

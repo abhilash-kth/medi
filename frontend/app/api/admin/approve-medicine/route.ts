@@ -17,10 +17,12 @@ export async function POST(req: Request) {
     where: { canonicalName: body.canonicalName },
     create: {
       ...body,
-      approved: true
+      approved: true,
+      approvedAt: new Date(),
     },
     update: {
-      approved: true
+      approved: true,
+      approvedAt: new Date()
     }
   })
 

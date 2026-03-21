@@ -2,9 +2,9 @@ import api from "@/lib/axios"
 
 // ---------------- MEDICINES ----------------
 
-export const fetchMedicines = async (page = 1, limit = 20) => {
+export const fetchMedicines = async (page = 1, limit = 20,approvedFilter="ALL") => {
   const res = await api.get("/medicine-data", {
-    params: { page, limit },
+    params: { page, limit, approvedFilter },
   })
   return res.data
 }
